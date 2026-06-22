@@ -96,7 +96,7 @@ const LoginController = asyncHandler(async(req,res)=>{
     const cookieOptions = {
            httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
+            sameSite: "lax"
     }
 
     res.cookie("accessToken",
@@ -167,7 +167,7 @@ const RefreshController = asyncHandler(async(req,res)=>{
     const cookieOptions = {
         httpOnly: true,
         secure : process.env.NODE_ENV==='production',
-        sameSite: 'strict'
+        sameSite: 'lax'
     }
 
      res.cookie("accessToken",

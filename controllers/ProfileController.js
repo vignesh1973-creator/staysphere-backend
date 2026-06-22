@@ -7,7 +7,7 @@ import asyncHandler from 'express-async-handler';
 const getProfileController = asyncHandler(async(req,res)=>{
     const userId = req.user.id;
 
-    const existingProfile = await Profile.findOne({userId});
+    const existingProfile = await Profile.findOne({userId}).populate('userId', 'email isHost');
 
     if(!existingProfile){
         const err = new Error("Profile not found");
@@ -29,7 +29,7 @@ const updateProfileController = asyncHandler(async(req,res)=>{
     const existingProfile = await Profile.findOneAndUpdate({userId},
         req.body,
         {new:true}
-    )
+    ).populate('userId', 'email isHost');
 
     if(!existingProfile){
         const err = new Error("Profile not found ");
