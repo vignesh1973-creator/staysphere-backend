@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Sparkles, AlertTriangle, X, RefreshCw } from 'lucide-react';
 
 const ConfirmationModal = ({
@@ -14,19 +15,22 @@ const ConfirmationModal = ({
 }) => {
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+  // Render via portal so the modal escapes any parent stacking context
+  // (e.g. Navbar's backdrop-filter creates a new stacking context that
+  //  breaks position:fixed — portal renders directly on document.body)
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
       {/* Click outside to close */}
       <div className="absolute inset-0" onClick={loading ? undefined : onClose}></div>
 
       {/* Modal Box */}
-      <div className="w-full max-w-md glass-panel p-6 sm:p-8 rounded-2xl border border-slate-205 dark:border-slate-800 shadow-2xl relative z-10 animate-in zoom-in-95 duration-200">
-        
+      <div className="w-full max-w-md glass-panel p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl relative z-10 animate-in zoom-in-95 duration-200">
+
         {/* Close Button */}
         {!loading && (
-          <button 
+          <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-slate-500 hover:text-slate-805 dark:hover:text-white transition-colors"
+            className="absolute top-4 right-4 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -35,11 +39,11 @@ const ConfirmationModal = ({
         {/* Icon Header */}
         <div className="flex items-center justify-center mb-5">
           {type === 'info' ? (
-            <div className="bg-brand-500/10 text-brand-655 text-brand-600 dark:text-brand-400 p-3.5 rounded-2xl border border-brand-500/20">
+            <div className="bg-brand-500/10 text-brand-600 dark:text-brand-400 p-3.5 rounded-2xl border border-brand-500/20">
               <Sparkles className="h-6 w-6" />
             </div>
           ) : (
-            <div className="bg-red-50/10 dark:bg-red-500/10 text-red-655 dark:text-red-400 p-3.5 rounded-2xl border border-red-500/20">
+            <div className="bg-red-500/10 text-red-600 dark:text-red-400 p-3.5 rounded-2xl border border-red-500/20">
               <AlertTriangle className="h-6 w-6" />
             </div>
           )}
@@ -47,10 +51,10 @@ const ConfirmationModal = ({
 
         {/* Text */}
         <div className="text-center mb-6">
-          <h3 className="text-slate-905 dark:text-white text-slate-900 font-extrabold text-lg sm:text-xl">
+          <h3 className="text-slate-900 dark:text-white font-extrabold text-lg sm:text-xl">
             {title}
           </h3>
-          <p className="text-slate-555 dark:text-slate-400 text-slate-500 text-sm mt-2 leading-relaxed">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 leading-relaxed">
             {message}
           </p>
         </div>
@@ -65,7 +69,7 @@ const ConfirmationModal = ({
           >
             {cancelText}
           </button>
-          
+
           <button
             type="button"
             onClick={onConfirm}
@@ -85,7 +89,8 @@ const ConfirmationModal = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
